@@ -1,4 +1,4 @@
-Footlights-fuse
-===============
+ProjectDistorage
+================
 
-A FUSE implementation of the Footlights Distributed File System
+A FUSE filesystem implementation.

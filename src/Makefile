@@ -15,6 +15,9 @@ PROG = distorage
 link: 
 	ocamlfind ocamlc $(OCAML_OPTS) -linkpkg -package bitstring link.ml -o link
 
+block: 
+	ocamlfind ocamlc $(OCAML_OPTS) -linkpkg -package bitstring block.ml -o block
+
 # Clean
 clean:
 	rm -f core *~ *.cmi *.cmo *.cmx *.cma *.cmxa *.cmp *.a *.o *.so

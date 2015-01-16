@@ -4,13 +4,12 @@ BITSTRING_DEPS = $(BITSTRING_MODULE) $(BITSTRING_DIR)/bitstring_persistent.cma $
 
 OCAML_OPTS = -pp 'camlp4o $(BITSTRING_DEPS)'
 
-OBJECTS = link
+OBJECTS = link block
 PROG = distorage
 
-# all: $(PROG)
+all: $(PROG)
 
-#$(PROG): $(OBJECTS)
-#  $(CPP) -Wall -O -g  $(OBJECTS) -o $(PROG)
+$(PROG): $(OBJECTS)
 
 link: 
 	ocamlfind ocamlc $(OCAML_OPTS) -linkpkg -package bitstring link.ml -o link

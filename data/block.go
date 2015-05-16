@@ -29,7 +29,7 @@ type block struct {
 
 func (blk *block) create(block_size int, links []link, content []byte) {
 
-	blk.magic = [6]byte{0x5, 0x4, 0x3, 0x2, 0x1, 0x0}
+	blk.magic = [6]byte{0xF0, 0x07, 0xDA, 0x7A, '\r', '\n'}
 	blk.block_len = int8(math.Log2(float64(block_size)))
 	blk.num_links = int8(len(links))
 	blk.offset = int32(blk.num_links)*96 + 16

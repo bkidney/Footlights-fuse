@@ -50,5 +50,16 @@ func (blk *Block) Create(block_size int, links []Link, content []byte) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
 
+func (blk *Block) ContentSize() int32 {
+	return blk.content_len
+}
+
+func (blk *Block) Offset() int32 {
+	return blk.offset
+}
+
+func (blk *Block) NumLinks() int8 {
+	return blk.num_links
 }

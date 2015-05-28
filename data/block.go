@@ -6,7 +6,7 @@ import (
 	"math"
 )
 
-type block struct {
+type Block struct {
 	/*
 	   magic - 6
 	   block_len - 2
@@ -22,12 +22,16 @@ type block struct {
 	num_links   int8
 	offset      int32
 	content_len int32
-	links       []link
+	links       []Link
 	content     []byte
 	padding     []byte
 }
 
-func (blk *block) create(block_size int, links []link, content []byte) {
+func NewBlock() *Block {
+	return &Block{}
+}
+
+func (blk *Block) Create(block_size int, links []Link, content []byte) {
 
 	blk.magic = [6]byte{0xF0, 0x07, 0xDA, 0x7A, '\r', '\n'}
 	blk.block_len = int8(math.Log2(float64(block_size)))

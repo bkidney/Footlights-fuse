@@ -1,7 +1,12 @@
 package data
 
 import (
+	"bytes"
+	"crypto/aes"
+	"crypto/cipher"
 	"crypto/rand"
+	"crypto/sha256"
+	"encoding/binary"
 	"fmt"
 	"math"
 )
@@ -50,6 +55,43 @@ func (blk *Block) Create(block_size int, links []Link, content []byte) {
 	if err != nil {
 		fmt.Println(err)
 	}
+}
+
+func (blk *Block) GetBytes() []byte {
+	var bin_buf bytes.Buffer
+	binary.Write(&bin_buf, binary.BigEndian, blk)
+
+	return bin_buf.Bytes()
+}
+
+func (blk *Block) GetKey() []byte {
+
+	bin_blk := blk.GetBytes()
+
+	// Create hash and feed data into ongoing hash
+	hash := sha256.New()
+	hash.Write(bin_blk)
+
+	// Return the hash and append to nil string
+	return hash.Sum(nil)
+}
+
+func (blk *Block) Encrypt(key []byte) (ciphertext []byte) {
+
+	plaintext := blk.GetBytes()
+
+	block, err := aes.NewCipher(key[16:])
+	if err != nil {
+		panic(err)
+	}
+
+	ciphertext = make([]byte, len(plaintext))
+	iv := key[:16]
+
+	mode := cipher.NewCBCEncrypter(block, iv)
+	mode.CryptBlocks(ciphertext, plaintext)
+
+	return
 }
 
 func (blk *Block) ContentSize() int32 {

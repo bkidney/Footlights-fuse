@@ -64,7 +64,7 @@ func (blk *Block) GetBytes() []byte {
 	return bin_buf.Bytes()
 }
 
-func (blk *Block) GetKey() []byte {
+func (blk *Block) GetHash() []byte {
 
 	bin_blk := blk.GetBytes()
 
@@ -76,17 +76,18 @@ func (blk *Block) GetKey() []byte {
 	return hash.Sum(nil)
 }
 
-func (blk *Block) Encrypt(key []byte) (ciphertext []byte) {
+func (blk *Block) Encrypt(hash []byte) (ciphertext []byte) {
 
 	plaintext := blk.GetBytes()
+	key := hash[16:]
+	iv := hash[:16]
 
-	block, err := aes.NewCipher(key[16:])
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		panic(err)
 	}
 
 	ciphertext = make([]byte, len(plaintext))
-	iv := key[:16]
 
 	mode := cipher.NewCBCEncrypter(block, iv)
 	mode.CryptBlocks(ciphertext, plaintext)

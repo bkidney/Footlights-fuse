@@ -2,14 +2,13 @@ package data
 
 /*
 Todo:
-	- Strip out all crypto into a utility class
-		- To wrap go pkg into something more generic
-		- Will want to move to OpenSSL in future
 	- Block should have functions
 		- ToBytes()
 	- Where do I build the links / Encrypt Blocks?
 		- Maybe there should be a builder "class"
 		- Remove block from having to know about crypto
+	- How to I test block encryption?
+		- Is Encrypt = Decrypt enough?
 */
 
 import (
@@ -68,14 +67,15 @@ func (blk *Block) Create(block_size int, links []Link, content []byte) {
 	}
 }
 
-func (blk *Block) Encrypt() (encrypted_blk []byte) {
+func (blk *Block) Encrypt() (name []byte, key_iv []byte, encrypted_blk []byte) {
 
 	plaintext := blk.GetBytes()
-	hash := crypto.GetHash(plaintext)
-	key := hash[16:]
-	iv := hash[:16]
+	key_iv = crypto.GetHash(plaintext)
+	key := key_iv[16:]
+	iv := key_iv[:16]
 
 	encrypted_blk = crypto.Encrypt(plaintext, key, iv)
+	name = crypto.GetHash(encrypted_blk)
 
 	return
 }

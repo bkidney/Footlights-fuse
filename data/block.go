@@ -1,14 +1,25 @@
 package data
 
+/*
+Todo:
+	- Strip out all crypto into a utility class
+		- To wrap go pkg into something more generic
+		- Will want to move to OpenSSL in future
+	- Block should have functions
+		- ToBytes()
+	- Where do I build the links / Encrypt Blocks?
+		- Maybe there should be a builder "class"
+		- Remove block from having to know about crypto
+*/
+
 import (
 	"bytes"
-	"crypto/aes"
-	"crypto/cipher"
 	"crypto/rand"
-	"crypto/sha256"
 	"encoding/binary"
 	"fmt"
 	"math"
+
+	"github.com/bkidney/ProjectDistorage/crypto"
 )
 
 type Block struct {
@@ -57,42 +68,23 @@ func (blk *Block) Create(block_size int, links []Link, content []byte) {
 	}
 }
 
+func (blk *Block) Encrypt() (encrypted_blk []byte) {
+
+	plaintext := blk.GetBytes()
+	hash := crypto.GetHash(plaintext)
+	key := hash[16:]
+	iv := hash[:16]
+
+	encrypted_blk = crypto.Encrypt(plaintext, key, iv)
+
+	return
+}
+
 func (blk *Block) GetBytes() []byte {
 	var bin_buf bytes.Buffer
 	binary.Write(&bin_buf, binary.BigEndian, blk)
 
 	return bin_buf.Bytes()
-}
-
-func (blk *Block) GetHash() []byte {
-
-	bin_blk := blk.GetBytes()
-
-	// Create hash and feed data into ongoing hash
-	hash := sha256.New()
-	hash.Write(bin_blk)
-
-	// Return the hash and append to nil string
-	return hash.Sum(nil)
-}
-
-func (blk *Block) Encrypt(hash []byte) (ciphertext []byte) {
-
-	plaintext := blk.GetBytes()
-	key := hash[16:]
-	iv := hash[:16]
-
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		panic(err)
-	}
-
-	ciphertext = make([]byte, len(plaintext))
-
-	mode := cipher.NewCBCEncrypter(block, iv)
-	mode.CryptBlocks(ciphertext, plaintext)
-
-	return
 }
 
 func (blk *Block) ContentSize() int32 {

@@ -1,5 +1,10 @@
 package crypto
 
+/*
+	- Will want to move to OpenSSL in future
+		- http://sosedoff.com/2015/05/22/data-encryption-in-go-using-openssl.html
+*/
+
 import (
 	"crypto/aes"
 	"crypto/cipher"
@@ -27,6 +32,21 @@ func Encrypt(plaintext []byte, key []byte, iv []byte) (ciphertext []byte) {
 
 	mode := cipher.NewCBCEncrypter(block, iv)
 	mode.CryptBlocks(ciphertext, plaintext)
+
+	return
+}
+
+func Decrypt(ciphertext []byte, key []byte, iv []byte) (plaintext []byte) {
+
+	block, err := aes.NewCipher(key)
+	if err != nil {
+		panic(err)
+	}
+
+	plaintext = make([]byte, len(ciphertext))
+
+	mode := cipher.NewCBCDecrypter(block, iv)
+	mode.CryptBlocks(plaintext, ciphertext)
 
 	return
 }

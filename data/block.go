@@ -67,7 +67,7 @@ func (blk *Block) Create(block_size int, links []Link, content []byte) {
 	}
 }
 
-func (blk *Block) Encrypt() (name []byte, key_iv []byte, encrypted_blk []byte) {
+func Encrypt(blk Block) (name []byte, key_iv []byte, encrypted_blk []byte) {
 
 	plaintext := blk.GetBytes()
 	key_iv = crypto.GetHash(plaintext)

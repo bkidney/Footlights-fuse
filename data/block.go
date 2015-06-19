@@ -80,6 +80,16 @@ func Encrypt(blk Block) (name []byte, key_iv []byte, encrypted_blk []byte) {
 	return
 }
 
+func Decrypt(key_iv, blk []byte) (decrypted_blk []byte) {
+
+	key := key_iv[16:]
+	iv := key_iv[:16]
+
+	decrypted_blk = crypto.Decrypt(blk, key, iv)
+
+	return
+}
+
 func (blk *Block) GetBytes() []byte {
 	var bin_buf bytes.Buffer
 	binary.Write(&bin_buf, binary.BigEndian, blk)

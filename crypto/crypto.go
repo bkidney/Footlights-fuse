@@ -3,6 +3,12 @@ package crypto
 /*
 	- Will want to move to OpenSSL in future
 		- http://sosedoff.com/2015/05/22/data-encryption-in-go-using-openssl.html
+	- Error handling
+		- IV must be block size
+		- Key must be block size
+		- Data size must be a multiple of block size
+	- Need to be able to handle different ciphers
+	- Need to be able to handle different hashes
 */
 
 import (

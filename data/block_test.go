@@ -79,7 +79,7 @@ func TestBlock_BlockEncryption(t *testing.T) {
 		_, key_iv, encrypted_blk := data.Encrypt(blk)
 		decrypted_blk := data.Decrypt(key_iv, encrypted_blk)
 
-		if !bytes.Equal(blk.GetBytes(), decrypted_blk) {
+		if !bytes.Equal(blk.Bytes(), decrypted_blk) {
 			t.Errorf("%d. Decrypted content does not match original ", i)
 		}
 	}

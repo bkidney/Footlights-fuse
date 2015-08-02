@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/bkidney/ProjectDistorage/data"
+	"github.com/spf13/viper"
 )
 
 type TestVector struct {
@@ -40,7 +41,15 @@ func testVectorsAsBlocks() (blocks []data.Block) {
 	return
 }
 
+func loadDefaultSettings() {
+	viper.SetDefault("cipher", "AES")
+	viper.SetDefault("hash", "SHA256")
+	viper.SetDefault("cipher-mode", "CBC")
+}
+
 func TestBlock_BlockCreation(t *testing.T) {
+
+	loadDefaultSettings()
 
 	tests := testVectors()
 
@@ -62,13 +71,15 @@ func TestBlock_BlockCreation(t *testing.T) {
 
 func TestBlock_BlockEncryption(t *testing.T) {
 
+	loadDefaultSettings()
+
 	tests := testVectorsAsBlocks()
 
 	for i, blk := range tests {
 		_, key_iv, encrypted_blk := data.Encrypt(blk)
 		decrypted_blk := data.Decrypt(key_iv, encrypted_blk)
 
-		if !bytes.Equal(blk.GetBytes(), decrypted_blk) {
+		if !bytes.Equal(blk.Bytes(), decrypted_blk) {
 			t.Errorf("%d. Decrypted content does not match original ", i)
 		}
 	}

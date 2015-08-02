@@ -69,13 +69,13 @@ func (blk *Block) Create(block_size int, links []Link, content []byte) {
 
 func Encrypt(blk Block) (name []byte, key_iv []byte, encrypted_blk []byte) {
 
-	plaintext := blk.GetBytes()
-	key_iv = crypto.GetHash(plaintext)
+	plaintext := blk.Bytes()
+	key_iv = crypto.Hash(plaintext)
 	key := key_iv[16:]
 	iv := key_iv[:16]
 
 	encrypted_blk = crypto.Encrypt(plaintext, key, iv)
-	name = crypto.GetHash(encrypted_blk)
+	name = crypto.Hash(encrypted_blk)
 
 	return
 }
@@ -90,7 +90,7 @@ func Decrypt(key_iv, blk []byte) (decrypted_blk []byte) {
 	return
 }
 
-func (blk *Block) GetBytes() []byte {
+func (blk *Block) Bytes() []byte {
 	var bin_buf bytes.Buffer
 	binary.Write(&bin_buf, binary.BigEndian, blk)
 

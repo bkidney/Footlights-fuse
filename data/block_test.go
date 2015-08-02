@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/bkidney/ProjectDistorage/data"
+	"github.com/spf13/viper"
 )
 
 type TestVector struct {
@@ -40,7 +41,15 @@ func testVectorsAsBlocks() (blocks []data.Block) {
 	return
 }
 
+func loadDefaultSettings() {
+	viper.SetDefault("cipher", "AES")
+	viper.SetDefault("hash", "SHA256")
+	viper.SetDefault("cipher-mode", "CBC")
+}
+
 func TestBlock_BlockCreation(t *testing.T) {
+
+	loadDefaultSettings()
 
 	tests := testVectors()
 
@@ -61,6 +70,8 @@ func TestBlock_BlockCreation(t *testing.T) {
 }
 
 func TestBlock_BlockEncryption(t *testing.T) {
+
+	loadDefaultSettings()
 
 	tests := testVectorsAsBlocks()
 
